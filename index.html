@@ -13,6 +13,7 @@
 			margin: 0 auto;
 			background: #ddd;
 			background-size: cover;
+			position: relative;
 		}
 		.bg-img {
             background: url(ounq1mw5kdxy.gif) no-repeat 0 0;
@@ -50,6 +51,30 @@
 			width: 100%;
 		}
 
+		#image-grid {
+			width: 100%;
+			height: 600px;
+			position: absolute;
+			left: 0;
+			top: 0;
+			padding: 0;
+		}
+
+		#image-grid li {
+			width: 100px;
+			height: 75px;
+			background: #eee;
+			list-style-type: none;
+			float: left;
+			border: 1px solid #000;
+			overflow: hidden;
+		}
+
+		#image-grid li img {
+			width: 100%;
+			transform: scale(1.8);
+		}
+
 	</style>
 </head>
 <body onload="setAction()">
@@ -62,6 +87,9 @@
 					<div class="imageholder">
 						<img src="" alt="">
 					</div>
+
+					<ul id="image-grid">
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -73,12 +101,11 @@
 	<script>
 		const preloader = document.querySelector(".preloader");
 		const imgholder = document.querySelector(".imageholder img");
+		var counter = 0;
 
-		let imagelist = ['https://c4.wallpaperflare.com/wallpaper/267/451/736/5bd32e1029d00-wallpaper-082e6fe19cfa39b41a4244270449be14.jpg', 'https://c4.wallpaperflare.com/wallpaper/87/408/892/moai-statue-easter-island-wallpaper-9950385d514a1dfb2657384f20a1360d.jpg'];
+		let imagelist = ['https://c4.wallpaperflare.com/wallpaper/267/451/736/5bd32e1029d00-wallpaper-082e6fe19cfa39b41a4244270449be14.jpg', 'https://c4.wallpaperflare.com/wallpaper/87/408/892/moai-statue-easter-island-wallpaper-9950385d514a1dfb2657384f20a1360d.jpg', 'https://c4.wallpaperflare.com/wallpaper/470/455/703/cat-jump-butterfly-grass-wallpaper-b79fc2742f35ffaa4fa28401f16147d5.jpg', 'https://c4.wallpaperflare.com/wallpaper/639/424/940/birds-bird-cute-fuzzy-wallpaper-d9e0a8bda19a7dab3607486fe07146bd.jpg', 'https://c4.wallpaperflare.com/wallpaper/804/463/731/5bd3230792420-wallpaper-f856cd78b0206c08b09c11fee8b2345a.jpg'];
 
 		function setAction(){
-			
-
 			initLoader(imagelist.shift());
 		}
 
@@ -93,10 +120,11 @@
 		        element.style.opacity = op;
 		        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
 		        op -= op * 0.1;
-		    }, 500);
+		    }, 10);
 		}
 
 		function loadImage(p_img){
+			console.log('loading image: ' + p_img);
 			var img = new Image();	
 			img.src = p_img;
 			// img.onload = () => {
@@ -108,6 +136,10 @@
 			img.onload = function(){
 				onLoadComplete(img.src, imgholder);
 			}
+
+			img.onprogress = function(e){
+				console.log(e.total);
+			}
 		}
 
 		function initLoader(p_img){
@@ -115,14 +147,19 @@
 		}
 
 		function onLoadComplete(p_img, element){
-			element.src = p_img;
+			var imageGrid = document.querySelector("#image-grid");
+			var li = document.createElement("LI");
+			var img = document.createElement("IMG");
+			img.src = p_img;
+			li.appendChild(img);
+			imageGrid.append(li);
 
+			console.log(imagelist.length);
 			if(imagelist.length>0){
 				loadImage(imagelist.shift());
 			}else{
 				fadeOut(preloader);
 			}
-			
 		}
 	</script>
 </body>
